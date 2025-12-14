@@ -183,4 +183,29 @@ These actions must be executed immediately to mitigate active unauthorized acces
 ##   IMPACT 
 XXXXX
 
+##  EVIDENCE COLLECTED 
+
+### Flag 1: Return Connection Source 
+<img width="1513" height="418" alt="Flag 1" src="https://github.com/user-attachments/assets/6708c083-eb09-4b4f-897b-55e66a8c8e45" />
+
+### Flag 2: Compromised File Server Device
+<img width="1432" height="512" alt="Flag 2" src="https://github.com/user-attachments/assets/9d37cca5-2516-4451-a30a-ea089aa8011e" />
+
+### Flag 3: Compromised Administrator Account
+<img width="1432" height="512" alt="Flag 2" src="https://github.com/user-attachments/assets/3936d717-ae60-48fb-8166-9594a8f1ea06" />
+
+### Flag 4: Share Enumeration Command
+<img width="1387" height="412" alt="Flag 4" src="https://github.com/user-attachments/assets/4cc0527c-39d3-4f3f-826c-7c3dcf598906" />
+
+
+### Flag 5: Remote Share Enumeration
+<img width="1422" height="412" alt="Flag 5 " src="https://github.com/user-attachments/assets/886adabe-552c-4258-831a-fd3ad9b09845" />
+
+### Flag 6: Privilege Enumeration
+<img width="983" height="351" alt="Flag 6" src="https://github.com/user-attachments/assets/99e02150-c8e5-4cd0-9a34-94d20ed19679" />
+
+
+
+
+
 
