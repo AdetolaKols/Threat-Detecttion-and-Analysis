@@ -11,7 +11,7 @@
 
 ## Summary of Events
 
-Approximately **72 hours** after the initial compromise of **AZUKI-SL (Part 1)**, the threat actor **reconnected to the existing foothold** using new external infrastructure, marking the start of a second operational phase.
+About **72 hours** after the initial compromise of **AZUKI-SL**, the threat actor **reconnected to the existing foothold** using new external infrastructure, marking the start of a second operational phase.
 
 The attacker performed **lateral movement** via **RDP** to the corporate file server **azuki-fileserver01**, leveraging **stolen administrative credentials**. Once on the file server, a structured **discovery** phase followed, including **network mapping**, **share enumeration**, and **permission analysis**.
 
