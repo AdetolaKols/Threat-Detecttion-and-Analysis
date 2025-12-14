@@ -1,4 +1,4 @@
-#  Port of Entry - Azuki Virtual Machine Compromise 
+#  Port of Entry - Azuki-SL Virtual Machine Compromise 
 <img width="740" height="1110" alt="image" src="https://github.com/user-attachments/assets/175e509e-a948-4788-8507-5e7c0d30ce74" />
 
 | **Date of Report** |21st November 2025|
@@ -7,7 +7,7 @@
 | **Report Status**  | Open               |
 | **Escalated To**   | Joshua Makador – LOG(N) Pacific |
 | **Incident Date**  | 16th November 2025 |
-| **Analyst**        | Adetola Kols  |
+| **Analyst**        | Adetola Kolawole  |
 
 
 ## Summary of Events
