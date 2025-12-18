@@ -181,7 +181,10 @@ These actions must be executed immediately to mitigate active unauthorized acces
 | **Threat Hunting** | **Create baseline deviation alerts** for command-line execution patterns. | Integrate alerts into the security monitoring framework to detect suspicious deviations from typical system behavior. |
 
 ##   IMPACT 
-XXXXX
+
+Risk Assessment A successful attack would result in total administrative control, the loss of critical business data, and a long-term breach of the domain via stolen credentials.
+
+Observed Incident Details The threat actor successfully exfiltrated sensitive credential archives and performed memory dumps (LSASS) to harvest further access. They secured long-term access through registry persistence and took active steps to evade forensic detection. Currently, the attack appears limited to data theft and unauthorized access, as no destructive malware or ransomware has been identified.
 
 ##  EVIDENCE COLLECTED 
 
@@ -203,6 +206,54 @@ XXXXX
 
 ### Flag 6: Privilege Enumeration
 <img width="983" height="351" alt="Flag 6" src="https://github.com/user-attachments/assets/99e02150-c8e5-4cd0-9a34-94d20ed19679" />
+
+### Flag 7:  Network Configuration Enumeration
+<img width="972" height="241" alt="Flag 7" src="https://github.com/user-attachments/assets/db1a81c2-c3a4-41ab-a5a5-d7a851209503" />
+
+### Flag 8:  Directory Hiding Command
+<img width="1841" height="525" alt="flag 8" src="https://github.com/user-attachments/assets/3fd6498c-3ba0-4e20-87f1-1d37e77cb873" />
+
+### Flag 9: Staging Directory Path
+<img width="1841" height="525" alt="Flag 9" src="https://github.com/user-attachments/assets/5aa0ee97-a4a9-4e89-8e1c-c57154291ddb" />
+
+### Flag 10: Script Download Command
+<img width="1892" height="441" alt="flag 10" src="https://github.com/user-attachments/assets/4ffb6211-b313-4149-8534-1cafe87dff83" />
+
+### Flag 11: Credential File Discovery
+<img width="1248" height="737" alt="Flag 11" src="https://github.com/user-attachments/assets/b32775f8-2096-4bad-89ec-b3c037c9525c" />
+
+### Flag 12: Recursive Copy Command
+<img width="1902" height="262" alt="flag 12" src="https://github.com/user-attachments/assets/45f2786c-77bc-439e-b605-02633294b992" />
+
+### Flag 13: Compression Command
+<img width="1918" height="553" alt="Flag 13" src="https://github.com/user-attachments/assets/36cd0df1-17b9-4356-b5a1-3ba9a041cad4" />
+
+### Flag 14: Renamed Credential Dump Tool
+<img width="1427" height="233" alt="flag 14" src="https://github.com/user-attachments/assets/53e24bb4-845e-495e-a2cb-c97b04e1d3ca" />
+
+### Flag 15: Memory Dump Command
+<img width="1918" height="567" alt="Flag 15" src="https://github.com/user-attachments/assets/7e952aa9-7b4a-4df6-8f29-c78149fc3965" />
+
+### Flag 16 & 17: Exfiltration Upload Command & Cloud Exfiltration Service
+<img width="1868" height="585" alt="flag 16 and 17 " src="https://github.com/user-attachments/assets/b3cf05a9-3a1a-4fc2-b3eb-d5abc1d397b5" />
+
+### Flag 18: Registry Value Name (Persistence)
+<img width="1523" height="377" alt="flag 18" src="https://github.com/user-attachments/assets/dc2ac48f-0072-4443-ba5c-1e407e57b0e4" />
+
+### Flag 19: Persistence Beacon Filename
+<img width="1413" height="420" alt="Flag 19" src="https://github.com/user-attachments/assets/7c7a8672-05bc-4ba8-ad74-9015c0af68b4" />
+
+### Flag 20: PowerShell History File Deleted
+<img width="1281" height="382" alt="flag 20" src="https://github.com/user-attachments/assets/c76092da-aed6-46ab-802d-d1efbe244f51" />
+
+
+
+
+
+
+
+
+
 
 
 
