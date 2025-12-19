@@ -186,44 +186,166 @@ Risk Assessment A successful attack would result in total administrative control
 
 Observed Incident Details The threat actor successfully exfiltrated sensitive credential archives and performed memory dumps (LSASS) to harvest further access. They secured long-term access through registry persistence and took active steps to evade forensic detection. Currently, the attack appears limited to data theft and unauthorized access, as no destructive malware or ransomware has been identified.
 
-##  EVIDENCE COLLECTED 
+##  EVIDENCE COLLECTED AND KQL USED
 
 ### Flag 1: Return Connection Source 
 <img width="1513" height="418" alt="Flag 1" src="https://github.com/user-attachments/assets/6708c083-eb09-4b4f-897b-55e66a8c8e45" />
 
+**KQL Query Used:**
+```
+DeviceLogonEvents
+| where DeviceName contains "azuki" 
+| where Timestamp between (datetime(2025-11-20) .. datetime(2025-11-25))
+| where isnotempty(RemoteIP)
+| where ActionType in ("LogonSuccess", "LogonFailed")
+| project Timestamp, DeviceName, AccountName, LogonType, ActionType, RemoteIP
+| order by Timestamp asc
+```
+
 ### Flag 2: Compromised File Server Device
 <img width="1432" height="512" alt="Flag 2" src="https://github.com/user-attachments/assets/9d37cca5-2516-4451-a30a-ea089aa8011e" />
 
+**KQL Query Used:** 
+```
+1st 
+DeviceProcessEvents
+| where DeviceName contains "azuki" 
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where FileName contains "mstsc.exe"
+| project Timestamp, DeviceName, ProcessCommandLine, FolderPath, FileName, InitiatingProcessCommandLine, ActionType
+| order by Timestamp asc
+```
+```
+2nd
+DeviceNetworkEvents
+| where RemoteIP == "10.1.0.188" or LocalIP == "10.1.0.188"
+| where Timestamp between (datetime(2025-11-20) .. datetime(2025-11-25)) 
+| project Timestamp, DeviceName, LocalIP, RemoteIP, InitiatingProcessAccountName
+| order by Timestamp asc
+```
 ### Flag 3: Compromised Administrator Account
 <img width="1432" height="512" alt="Flag 2" src="https://github.com/user-attachments/assets/3936d717-ae60-48fb-8166-9594a8f1ea06" />
+
+**KQL Query Used:**
+Same as above
 
 ### Flag 4: Share Enumeration Command
 <img width="1387" height="412" alt="Flag 4" src="https://github.com/user-attachments/assets/4cc0527c-39d3-4f3f-826c-7c3dcf598906" />
 
+**KQL Query Used:**
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where ProcessCommandLine contains "net" or ProcessCommandLine contains "share" or ProcessCommandLine contains "view"
+| project Timestamp, ProcessCommandLine
+| order by Timestamp asc
+```
 
 ### Flag 5: Remote Share Enumeration
 <img width="1422" height="412" alt="Flag 5 " src="https://github.com/user-attachments/assets/886adabe-552c-4258-831a-fd3ad9b09845" />
 
+**KQL Query Used:**
+Same as above
+
 ### Flag 6: Privilege Enumeration
 <img width="983" height="351" alt="Flag 6" src="https://github.com/user-attachments/assets/99e02150-c8e5-4cd0-9a34-94d20ed19679" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where ProcessCommandLine contains "whoami" 
+    or ProcessCommandLine contains "net user"
+    or ProcessCommandLine contains "localgroup"
+    or ProcessCommandLine contains "priv"
+| project Timestamp, InitiatingProcessAccountName, ProcessCommandLine
+| order by Timestamp asc
+```
 
 ### Flag 7:  Network Configuration Enumeration
 <img width="972" height="241" alt="Flag 7" src="https://github.com/user-attachments/assets/db1a81c2-c3a4-41ab-a5a5-d7a851209503" />
 
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where ProcessCommandLine contains "ipconfig"
+    or ProcessCommandLine contains "netstat"
+    or ProcessCommandLine contains "arp"
+    or ProcessCommandLine contains "route"
+| project Timestamp, InitiatingProcessAccountName, ProcessCommandLine
+| order by Timestamp asc
+```
+
 ### Flag 8:  Directory Hiding Command
 <img width="1841" height="525" alt="flag 8" src="https://github.com/user-attachments/assets/3fd6498c-3ba0-4e20-87f1-1d37e77cb873" />
+
+**KQL Query Used:**
+
+```
+DeviceProcessEvents
+DeviceProcessEvents
+| where DeviceName contains "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| project Timestamp, DeviceName, ProcessCommandLine, FolderPath, FileName, InitiatingProcessCommandLine, ActionType
+| order by Timestamp asc
+```
 
 ### Flag 9: Staging Directory Path
 <img width="1841" height="525" alt="Flag 9" src="https://github.com/user-attachments/assets/5aa0ee97-a4a9-4e89-8e1c-c57154291ddb" />
 
+**KQL Query Used:**
+Same as above
+
 ### Flag 10: Script Download Command
 <img width="1892" height="441" alt="flag 10" src="https://github.com/user-attachments/assets/4ffb6211-b313-4149-8534-1cafe87dff83" />
+
+**KQL Query Used:**
+
+```
+DeviceProcessEvents
+| where DeviceName contains "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| project Timestamp, DeviceName, ProcessCommandLine, FolderPath, FileName, InitiatingProcessCommandLine, ActionType
+| order by Timestamp asc
+```
 
 ### Flag 11: Credential File Discovery
 <img width="1248" height="737" alt="Flag 11" src="https://github.com/user-attachments/assets/b32775f8-2096-4bad-89ec-b3c037c9525c" />
 
+**KQL Query Used:**
+
+```
+DeviceFileEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25))  
+| where ActionType == "FileCreated"
+| where FileName contains "pass"
+    or FileName contains "cred"
+    or FileName contains "pwd"
+    or FileName endswith ".txt"
+    or FileName endswith ".zip"
+| project Timestamp, FileName, FolderPath
+```
+
 ### Flag 12: Recursive Copy Command
 <img width="1902" height="262" alt="flag 12" src="https://github.com/user-attachments/assets/45f2786c-77bc-439e-b605-02633294b992" />
+
+**KQL Query Used:**
+
+```
+KQL 
+DeviceProcessEvents
+| where DeviceName contains "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| project Timestamp, DeviceName, ProcessCommandLine, FolderPath, FileName, InitiatingProcessCommandLine, ActionType
+| order by Timestamp asc
+```
+
 
 ### Flag 13: Compression Command
 <img width="1918" height="553" alt="Flag 13" src="https://github.com/user-attachments/assets/36cd0df1-17b9-4356-b5a1-3ba9a041cad4" />
