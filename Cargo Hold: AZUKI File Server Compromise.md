@@ -346,27 +346,90 @@ DeviceProcessEvents
 | order by Timestamp asc
 ```
 
-
 ### Flag 13: Compression Command
 <img width="1918" height="553" alt="Flag 13" src="https://github.com/user-attachments/assets/36cd0df1-17b9-4356-b5a1-3ba9a041cad4" />
+
+**KQL Query Used:**
+Same as above
 
 ### Flag 14: Renamed Credential Dump Tool
 <img width="1427" height="233" alt="flag 14" src="https://github.com/user-attachments/assets/53e24bb4-845e-495e-a2cb-c97b04e1d3ca" />
 
+**KQL Query Used:**
+
+```
+DeviceFileEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25))
+| where ActionType == "FileCreated"
+| where FileName endswith ".exe"
+| project Timestamp, DeviceName, FolderPath, FileName, InitiatingProcessFileName, InitiatingProcessCommandLine, SHA1
+```
+
 ### Flag 15: Memory Dump Command
 <img width="1918" height="567" alt="Flag 15" src="https://github.com/user-attachments/assets/7e952aa9-7b4a-4df6-8f29-c78149fc3965" />
+
+**KQL Query Used:**
+
+```
+DeviceProcessEvents
+| where DeviceName contains "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| project Timestamp, DeviceName, ProcessCommandLine, FolderPath, FileName, InitiatingProcessCommandLine, ActionType
+| order by Timestamp asc
+```
 
 ### Flag 16 & 17: Exfiltration Upload Command & Cloud Exfiltration Service
 <img width="1868" height="585" alt="flag 16 and 17 " src="https://github.com/user-attachments/assets/b3cf05a9-3a1a-4fc2-b3eb-d5abc1d397b5" />
 
+**KQL Query Used:**
+Same as above
+
 ### Flag 18: Registry Value Name (Persistence)
 <img width="1523" height="377" alt="flag 18" src="https://github.com/user-attachments/assets/dc2ac48f-0072-4443-ba5c-1e407e57b0e4" />
+
+**KQL Query Used:**
+```
+DeviceRegistryEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where ActionType == "RegistryValueSet" or ActionType == "RegistryKeyCreate"
+| where RegistryKey has_any (
+    @"\Software\Microsoft\Windows\CurrentVersion\Run",
+    @"\Software\Microsoft\Windows\CurrentVersion\RunOnce")
+| project Timestamp, RegistryKey, InitiatingProcessCommandLine, RegistryValueType, RegistryValueName
+| order by Timestamp asc
+```
 
 ### Flag 19: Persistence Beacon Filename
 <img width="1413" height="420" alt="Flag 19" src="https://github.com/user-attachments/assets/7c7a8672-05bc-4ba8-ad74-9015c0af68b4" />
 
+**KQL Query Used:**
+```
+DeviceRegistryEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where ActionType =~ "RegistryValueSet"
+| where RegistryValueData contains ".exe"
+    or RegistryValueData contains ".ps1"
+    or RegistryValueData contains ".bat"
+    or RegistryValueData contains ".vbs"
+| extend BeaconFile = extract(@"([^\\]+)$", 1, RegistryValueData)
+| project Timestamp, RegistryKey, RegistryValueData, BeaconFile
+| order by Timestamp asc
+```
 ### Flag 20: PowerShell History File Deleted
 <img width="1281" height="382" alt="flag 20" src="https://github.com/user-attachments/assets/c76092da-aed6-46ab-802d-d1efbe244f51" />
+
+**KQL Query Used:**
+```
+DeviceFileEvents
+| where DeviceName == "azuki-fileserver01"
+| where Timestamp between (datetime(2025-11-22) .. datetime(2025-11-25)) 
+| where ActionType == "FileDeleted"
+| project Timestamp, FileName, FolderPath
+| order by Timestamp asc
+```
 
 
 
