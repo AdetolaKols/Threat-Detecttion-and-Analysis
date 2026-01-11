@@ -1,6 +1,7 @@
 # Bridge Takeover - AZUKI Import/Export
 
-<img width="740" height="1110" alt="image" src="https://github.com/user-attachments/assets/175e509e-a948-4788-8507-5e7c0d30ce74" />
+<img width="1536" height="1024" alt="ChatGPT Image Jan 11, 2026, 07_06_07 PM" src="https://github.com/user-attachments/assets/dd066846-059d-4ca5-820f-e1d68508fc4c" />
+
 
 |  Date of Report | 25-Dec-25         |
 |-----------------|------------------|
