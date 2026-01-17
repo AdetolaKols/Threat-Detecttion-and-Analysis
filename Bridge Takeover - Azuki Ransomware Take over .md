@@ -160,10 +160,150 @@ The attacker pivoted laterally to a high-value administrative workstation (azuki
 - Increase SIEM telemetry retention  
 - Establish routine threat-hunting playbooks  
 
+
 ##  Conclusion
 
 This incident demonstrates how attackers leverage legitimate tools, weak credential hygiene, and limited monitoring to conduct structured, low-noise intrusions. Each phase reinforced the next, culminating in credential compromise and successful data exfiltration.
 
-The hunt highlights the importance of **behavior-based detection**, **defense in depth**, and **strong credential hygiene** in modern enterprise environments.
+##  EVIDENCE COLLECTED AND KQL USED
 
+### Flag 1-3 : LATERAL MOVEMENT
+<img width="952" height="354" alt="Screenshot 2025-12-17 114358" src="https://github.com/user-attachments/assets/2c3e180a-4dc4-42e8-8f94-3b1b52f3c1a7" />
 
+<img width="1449" height="211" alt="Flag 4" src="https://github.com/user-attachments/assets/567b553b-03b3-43b7-bfd6-663c5a18aa63" />
+
+**KQL Query Used:**
+```
+Ist KQL : 
+DeviceLogonEvents
+| where Timestamp >= datetime(2025-11-24)
+| where ActionType == "LogonSuccess"
+| where LogonType == "RemoteInteractive"
+| summarize Logons=count(),
+          Targets=makeset(DeviceName, 50),
+          Accounts=makeset(AccountName, 50)
+          by RemoteIP
+```
+```
+2nd KQL : 
+DeviceLogonEvents
+| where Timestamp >= datetime(2025-11-24)
+| where ActionType == "LogonSuccess"
+| where LogonType == "RemoteInteractive"
+| where RemoteIP == "10.1.0.204"
+| project Timestamp,
+          TargetDevice=DeviceName,
+          AccountName,
+          RemoteIP
+| order by Timestamp asc
+```
+### Flag 4 & 5 : Execution 
+
+<img width="1449" height="211" alt="Flag 4" src="https://github.com/user-attachments/assets/74258cb4-e066-4db0-9076-e28776881765" />
+
+<img width="936" height="343" alt="flag 5" src="https://github.com/user-attachments/assets/407e8552-a01a-445e-a42f-fd0d982b62cc" />
+
+```
+DeviceNetworkEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 04:00:00) and Timestamp <= datetime(2025-11-25 04:30:00)
+| where isnotempty(RemoteUrl)
+| where InitiatingProcessFileName has_any ("powershell.exe","cmd.exe","mshta.exe","wscript.exe","cscript.exe","rundll32.exe","bitsadmin.exe","certutil.exe","curl.exe","wget.exe","python.exe")
+| extend Host = tostring(parse_url(RemoteUrl).Host)
+| project Timestamp, InitiatingProcessAccountName, InitiatingProcessFileName, Host, RemoteUrl, InitiatingProcessCommandLine
+| order by Timestamp asc
+```
+### Flag 6: Archive Extraction Command
+<img width="1292" height="220" alt="flag 6" src="https://github.com/user-attachments/assets/371f142b-0b88-4e6e-93cf-603e4acda2cc" />
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 04:00:00)
+| where FileName has_any ("7z.exe","7za.exe","winrar.exe","rar.exe","tar.exe","unzip.exe")
+| where ProcessCommandLine has_any ("x","extract","-p","-password")
+| project Timestamp, AccountName, FileName, ProcessCommandLine
+| order by Timestamp asc
+```
+### Flag 7: Persistence - C2 Implant
+<img width="1432" height="313" alt="Flag 7" src="https://github.com/user-attachments/assets/bf3f93a6-9d42-473e-bb97-eb290e69dd41" />
+
+```
+DeviceFileEvents
+| where DeviceName == "azuki-adminpc"
+| where FolderPath has @"\Windows\Temp\cache"
+| where Timestamp >= datetime(2025-11-25 04:00:00)
+| where ActionType == "FileCreated"
+| project Timestamp, FileName, FolderPath, InitiatingProcessFileName
+| order by Timestamp asc
+```
+### Flag 8: Persistence- Named Pipe
+<img width="1582" height="507" alt="Flag 8" src="https://github.com/user-attachments/assets/ce843cd2-2517-49d5-a720-a6e833b2bb31" />
+
+```
+DeviceEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 04:00:00) and Timestamp <= datetime(2025-11-25 04:30:00)
+| where ActionType == "NamedPipeEvent"
+| where InitiatingProcessFileName in~ ("meterpreter.exe","updater.exe")
+| extend AF = parse_json(AdditionalFields)
+| extend PipeName = tostring(AF.PipeName)
+| where isnotempty(PipeName)
+| project Timestamp, InitiatingProcessFileName, PipeName, AdditionalFields
+| order by Timestamp as
+```
+### Flag 9 & 10: Creedential Access - Decoded Account Creation
+<img width="1648" height="458" alt="Flag 9" src="https://github.com/user-attachments/assets/adcd990a-4cba-4b28-b8e6-6e9eb4330dc9" />
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 00:00:00)
+| where ProcessCommandLine has_any ("powershell","pwsh","-enc","EncodedCommand"," -e ")
+| extend Encoded = extract(@"(?i)(?:-enc(?:odedcommand)?| -e)\s+([A-Za-z0-9+/=]{20,})", 1, ProcessCommandLine)
+| where isnotempty(Encoded)
+| project Timestamp, AccountName, FileName, Encoded, ProcessCommandLine
+| order by Timestamp asc
+```
+
+### Flag 11: Persistence - Decoded Privilege Escalation Commandn
+<img width="1648" height="458" alt="Flag 9" src="https://github.com/user-attachments/assets/adcd990a-4cba-4b28-b8e6-6e9eb4330dc9" />
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 00:00:00)
+| where ProcessCommandLine has_any ("powershell","pwsh","-enc","EncodedCommand"," -e ")
+| extend Encoded = extract(@"(?i)(?:-enc(?:odedcommand)?| -e)\s+([A-Za-z0-9+/=]{20,})", 1, ProcessCommandLine)
+| where isnotempty(Encoded)
+| project Timestamp, AccountName, FileName, Encoded, ProcessCommandLine
+| order by Timestamp asc
+```
+
+### Flag 12: Discovery -  Session Enumeration
+
+<img width="1374" height="255" alt="flag 12" src="https://github.com/user-attachments/assets/9285194d-14b5-4165-9789-c84cf16358ab" />
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 00:00:00)
+| where ProcessCommandLine has_any ("powershell","pwsh","-enc","EncodedCommand"," -e ")
+| extend Encoded = extract(@"(?i)(?:-enc(?:odedcommand)?| -e)\s+([A-Za-z0-9+/=]{20,})", 1, ProcessCommandLine)
+| where isnotempty(Encoded)
+| project Timestamp, AccountName, FileName, Encoded, ProcessCommandLine
+| order by Timestamp asc
+```
+
+### Flag 13: Discovery - Domain Trust Enumeration
+
+<img width="1161" height="400" alt="flag 13" src="https://github.com/user-attachments/assets/243cd0c9-964b-4813-9022-718375c5ff87" />
+
+```
+DeviceProcessEvents
+| where DeviceName contains "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 00:00:00)
+| where ProcessCommandLine has_any ("nltest","Get-ADTrust","domain_trust","trusted_domains")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
+| order by Timestamp asc
+```
