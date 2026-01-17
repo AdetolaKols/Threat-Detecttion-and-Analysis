@@ -307,3 +307,38 @@ DeviceProcessEvents
 | project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
 | order by Timestamp asc
 ```
+
+### Flag 14: Discovery - Network Connection Enumeration
+<img width="1336" height="368" alt="flag 14" src="https://github.com/user-attachments/assets/13ed9b35-3d48-4787-b460-a3756ae3a319" />
+
+```
+DeviceProcessEvents
+| where DeviceName contains "azuki-adminpc"
+| where Timestamp between (datetime(2025-11-25) .. datetime(2025-11-26))
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
+| order by Timestamp desc
+```
+### Flag 15: Discovery - Network Connection Enumeration
+<img width="1517" height="346" alt="flag 15" src="https://github.com/user-attachments/assets/d3228237-699d-45bd-949b-2c15439c8850" />
+
+```
+DeviceProcessEvents
+| where DeviceName contains "azuki-adminpc"
+| where Timestamp between (datetime(2025-11-25) .. datetime(2025-11-26))
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
+| order by Timestamp desc
+```
+
+### Flag 16: Discovery - Credential File
+<img width="1517" height="346" alt="flag 15" src="https://github.com/user-attachments/assets/d3228237-699d-45bd-949b-2c15439c8850" />
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 00:00:00)
+| where FileName in~ ("notepad.exe","notepad++.exe","wordpad.exe","explorer.exe","cmd.exe","powershell.exe")
+| where ProcessCommandLine has_any (@"\Desktop\", @"\Documents\")
+| where ProcessCommandLine has_any (".txt","pass","cred","login","account","pw","secret")
+| project Timestamp, AccountName, FileName, ProcessCommandLine
+| order by Timestamp asc
+```
