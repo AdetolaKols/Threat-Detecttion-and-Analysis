@@ -330,7 +330,19 @@ DeviceProcessEvents
 ```
 
 ### Flag 16: Discovery - Credential File
-<img width="1517" height="346" alt="flag 15" src="https://github.com/user-attachments/assets/d3228237-699d-45bd-949b-2c15439c8850" />
+<img width="1551" height="311" alt="flag 16" src="https://github.com/user-attachments/assets/ad6f1e91-f036-4187-b881-db4f34de9f4a" />
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 00:00:00)
+| where FileName in~ ("notepad.exe","notepad++.exe","wordpad.exe","explorer.exe","cmd.exe","powershell.exe")
+| where ProcessCommandLine has_any (@"\Desktop\", @"\Documents\")
+| where ProcessCommandLine has_any (".txt","pass","cred","login","account","pw","secret")
+| project Timestamp, AccountName, FileName, ProcessCommandLine
+| order by Timestamp asc
+```
+### Flag 17: Collection - Data Staging Directory
+<img width="1897" height="361" alt="flag 17" src="https://github.com/user-attachments/assets/65ca9fbc-cbfc-441c-9550-b765e3af6c97" />
 
 ```
 DeviceProcessEvents
@@ -339,6 +351,19 @@ DeviceProcessEvents
 | where FileName in~ ("notepad.exe","notepad++.exe","wordpad.exe","explorer.exe","cmd.exe","powershell.exe")
 | where ProcessCommandLine has_any (@"\Desktop\", @"\Documents\")
 | where ProcessCommandLine has_any (".txt","pass","cred","login","account","pw","secret")
+| project Timestamp, AccountName, FileName, ProcessCommandLine
+| order by Timestamp asc
+```
+
+### Flag 18: Collection -  Automated Data Collection Command
+<img width="1362" height="313" alt="flag 18" src="https://github.com/user-attachments/assets/c8cc7983-e80c-4acf-ac33-020395e8684f" />
+
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 04:30:00)
+| where ProcessCommandLine has @"C:\ProgramData\Microsoft\Crypto\staging"
+| where ProcessCommandLine has_any ("bank","banking","statement","invoice","payment","tax","finance","account")
 | project Timestamp, AccountName, FileName, ProcessCommandLine
 | order by Timestamp asc
 ```
