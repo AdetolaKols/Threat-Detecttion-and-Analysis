@@ -1,4 +1,4 @@
-# Bridge Takeover - AZUKI Import/Export
+# Bridge Takeover - AZUKI Ransome Takeover
 
 <img width="1536" height="1024" alt="ChatGPT Image Jan 11, 2026, 07_06_07 PM" src="https://github.com/user-attachments/assets/dd066846-059d-4ca5-820f-e1d68508fc4c" />
 
