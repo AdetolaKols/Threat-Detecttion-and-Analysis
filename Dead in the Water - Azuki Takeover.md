@@ -1,5 +1,7 @@
 Dead in the Water - Azuki Import/Export.md
 
+
+
 |  Date of Report | 28-Dec-25         |
 |-----------------|------------------|
 | Severity Level  | CRITICAL         |
@@ -130,3 +132,166 @@ This incident represents a **backup-aware ransomware operation**.
 The attacker deliberately targeted backups, credentials, recovery services, and forensic artefacts before deploying ransomware. This approach maximised impact and limited recovery options.
 
 The activity shows mature tradecraft across both Linux and Windows environments and highlights the need to secure backup infrastructure as a high-risk asset.
+
+##  EVIDENCE COLLECTED AND KQL USED
+
+### Flag 1 : LATERAL MOVEMENT
+<img width="1826" height="256" alt="Flag 1 " src="https://github.com/user-attachments/assets/58342948-00cc-46f2-90d7-e7c79196e650" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where DeviceName =~ "AZUKI-AdminPC"
+| where FileName in~ ("ssh.exe","plink.exe","putty.exe","scp.exe","sftp.exe")
+| project TimeGenerated, DeviceName, AccountName, FileName, ProcessCommandLine, FolderPath
+| order by TimeGenerated desc
+```
+
+### Flag 2-3 : LATERAL MOVEMENT
+<img width="1816" height="250" alt="Flag 2" src="https://github.com/user-attachments/assets/1054544b-a6b3-4b44-bc9e-40d5b783fba6" />
+
+<img width="1715" height="420" alt="Flag 3" src="https://github.com/user-attachments/assets/85243aa0-ff7a-4e0e-a6cd-7dca6e88a823" />
+
+**KQL Query Used:**
+```
+DeviceNetworkEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where DeviceName =~ "AZUKI-AdminPC"
+| where InitiatingProcessFileName =~ "ssh.exe"
+| where RemotePort == 22
+| project TimeGenerated, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName,
+          LocalIP, LocalPort, RemoteIP, RemotePort, RemoteUrl, InitiatingProcessCommandLine
+| order by TimeGenerated desc
+```
+
+### Flag 4 : DISCOVERY - Directory Enumeration
+
+<img width="1582" height="401" alt="Flag 4" src="https://github.com/user-attachments/assets/97a9bb02-a232-4de1-bc21-8bdd9be46526" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where ProcessCommandLine has_any ("ls -", "ls --")
+| where ProcessCommandLine has_any ("/backup", "/backups", "/var/backups", "/mnt", "/srv", "/data", "/exports", "/opt")
+| project TimeGenerated, DeviceName, AccountName, FileName, ProcessCommandLine
+| order by TimeGenerated asc
+```
+
+### Flag 5 : DISCOVERY - File Search
+
+<img width="1314" height="413" alt="Flag 5" src="https://github.com/user-attachments/assets/35f67eaa-c077-4bc2-815a-924993046552" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-20) .. datetime(2025-12-02))
+| where DeviceName has "backupsrv"
+| where FileName == "find"
+| summarize Hits=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by ProcessCommandLine
+| order by Hits desc, FirstSeen asc
+```
+
+### Flag 6: DISCOVERY - File Search
+<img width="1602" height="382" alt="flag 6" src="https://github.com/user-attachments/assets/a34a16e3-292e-4172-a298-d371467bf01c" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where DeviceName == "azuki-adminpc"
+| where Timestamp >= datetime(2025-11-25 04:00:00)
+| where FileName has_any ("7z.exe","7za.exe","winrar.exe","rar.exe","tar.exe","unzip.exe")
+| where ProcessCommandLine has_any ("x","extract","-p","-password")
+| project Timestamp, AccountName, FileName, ProcessCommandLine
+| order by Timestamp asc
+```
+### Flag 7: DISCOVERY - Scheduled Job Reconnaissance
+<img width="1527" height="210" alt="Flag 7 but needs to be changed" src="https://github.com/user-attachments/assets/938edba9-4d9e-4880-b0fa-b673926dd994" />
+
+
+**KQL Query Used:**
+```
+DeviceFileEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where FileName == "crontab"
+| project TimeGenerated, DeviceName, ActionType, InitiatingProcessFileName, InitiatingProcessCommandLine, FolderPath, FileName
+| order by TimeGenerated asc
+```
+
+### Flag 8: DISCOVERY - Scheduled Job Reconnaissance
+<img width="1610" height="228" alt="Flag 8" src="https://github.com/user-attachments/assets/6051f928-fef8-43c2-b361-338342f7b8c9" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where FileName in ("curl","wget","ftp","python","bash","sh")
+| where ProcessCommandLine has_any ("http://","https://")
+| project TimeGenerated,
+          DeviceName,
+          AccountName,
+          FileName,
+          ProcessCommandLine
+| order by TimeGenerated asc
+```
+
+### Flag 9: CREDENTIAL ACCESS - Credential Theft
+<img width="1316" height="388" alt="flag 9" src="https://github.com/user-attachments/assets/3b94c0ba-2563-48bd-9378-bf3bff4f929f" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-24) .. datetime(2025-11-28))
+| where FileName contains "cat"
+| where AccountDomain contains "azuki"
+| project TimeGenerated, DeviceName, AccountName, FileName, ProcessCommandLine
+```
+
+### Flag 10: IMPACT - Data Destruction
+<img width="1035" height="231" alt="Flag10" src="https://github.com/user-attachments/assets/93be84ff-92d9-4928-a989-bea9ec8e6dc6" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where FileName == "rm"
+| where ProcessCommandLine has "-rf"
+| project TimeGenerated,
+          DeviceName,
+          AccountName,
+          ProcessCommandLine
+| order by TimeGenerated asc
+```
+
+### Flag 11: IMPACT - Service Stopped
+<img width="1818" height="518" alt="Flag11" src="https://github.com/user-attachments/assets/a13bc70d-b204-4145-ac1b-eafe2354636c" />
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where FileName == "rm"
+| where ProcessCommandLine has "-rf"
+| project TimeGenerated,
+          DeviceName,
+          AccountName,
+          ProcessCommandLine
+| order by TimeGenerated asc
+```
+
+### Flag 12: : IMPACT - Service Disabled Disabling a service prevents it from starting at boot - this SURVIVES a reboot.
+
+**KQL Query Used:**
+```
+DeviceProcessEvents
+| where TimeGenerated between (datetime(2025-11-25) .. datetime(2025-11-30))
+| where FileName == "rm"
+| where ProcessCommandLine has "-rf"
+| project TimeGenerated,
+          DeviceName,
+          AccountName,
+          ProcessCommandLine
+| order by TimeGenerated asc
+```
+ 
