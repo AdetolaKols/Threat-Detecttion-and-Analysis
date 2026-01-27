@@ -1,4 +1,4 @@
-# Dead in the Water - Azuki Ransomeware
+## Dead in the Water - Azuki Ransomeware
 
 <img width="1024" height="1536" alt="dead in the water" src="https://github.com/user-attachments/assets/bcc750e6-175e-42c3-af61-04dcd9cace1a" />
 
