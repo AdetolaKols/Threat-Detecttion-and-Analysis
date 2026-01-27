@@ -1,6 +1,7 @@
 # Cargo Hold - Azuki File Server Compromise 
 
-<img width="740" height="1110" alt="image" src="https://github.com/user-attachments/assets/175e509e-a948-4788-8507-5e7c0d30ce74" />
+<img width="1024" height="1536" alt="cargoholdct2" src="https://github.com/user-attachments/assets/f8ccdba8-4ba8-40aa-af2b-415a309b2d31" />
+
 
 |  Date of Report | 14-Dec-25         |
 |-----------------|------------------|
