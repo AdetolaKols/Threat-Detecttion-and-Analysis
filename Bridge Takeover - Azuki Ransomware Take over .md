@@ -3,7 +3,7 @@
 <img width="1536" height="1024" alt="ChatGPT Image Jan 11, 2026, 07_06_07 PM" src="https://github.com/user-attachments/assets/dd066846-059d-4ca5-820f-e1d68508fc4c" />
 
 
-|  Date of Report | 25-Dec-25         |
+|  Date of Report | 09-Jan-26         |
 |-----------------|------------------|
 | Severity Level  | CRITICAL         |
 | Escalated To   | Joshua Makador – LOG(N) Pacific |
@@ -56,7 +56,7 @@ The attacker pivoted laterally to a high-value administrative workstation (azuki
 | OLD-Passwords.txt | Plaintext credential file                |
 | ConsoleHost_history.txt | Deleted PowerShell history                 |
 
-## ⏱️ WHEN — Timeline
+## WHEN - Timeline
 
 ### Incident Window
 
