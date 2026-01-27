@@ -1,10 +1,10 @@
-Dead in the Water - Azuki Import/Export
+Dead in the Water - Azuki Ransomeware
 
 <img width="1024" height="1536" alt="dead in the water" src="https://github.com/user-attachments/assets/bcc750e6-175e-42c3-af61-04dcd9cace1a" />
 
 
 
-|  Date of Report | 28-Dec-25         |
+|  Date of Report | 09-Jan-26      |
 |-----------------|------------------|
 | Severity Level  | CRITICAL         |
 | Escalated To   | Joshua Makador – LOG(N) Pacific |
