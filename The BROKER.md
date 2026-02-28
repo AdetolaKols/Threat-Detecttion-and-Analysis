@@ -1,4 +1,4 @@
-#  Threat Hunt Report — Hands-on-Keyboard Attack
+#  The Broker - Hands-on-Keyboard Attack
 **Classification:** CONFIDENTIAL  
 **Date of Incident:** 15 January 2026  
 **Report Date:** 28 February 2026  
@@ -216,4 +216,4 @@ The root cause of this incident was a combination of technical and human factors
 
 ---
 
-*Report prepared by Mulan | Microsoft Sentinel Threat Hunt | 28 February 2026*
+*Report prepared by Adetola | Microsoft Sentinel Threat Analysis | 28 February 2026*
