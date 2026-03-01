@@ -3,7 +3,7 @@
 **Date of Incident:** 15 January 2026  
 **Report Date:** 28 February 2026  
 **Analyst:** Adetola Kolawole  
-**Environment:** Cyber Range Microsoft Sentinel — Log Analytics Workspace  
+**Environment:** Cyber Range Microsoft Sentinel - Log Analytics Workspace  
 
 ---
 
@@ -28,7 +28,7 @@ The attack demonstrated a high level of operational maturity, making use of Livi
 
 ---
 
-## 3. What — Attacker Actions & Malicious Artifacts
+## 3. What - Attacker Actions & Malicious Artifacts
 
 ### Malicious Files
 | Filename | SHA256 | Location |
@@ -56,7 +56,7 @@ The attack demonstrated a high level of operational maturity, making use of Livi
 
 ---
 
-## 4. When — Unified Attack Timeline
+## 4. When - Unified Attack Timeline
 
 | Time (UTC) | Host | Event |
 |---|---|---|
@@ -103,7 +103,7 @@ The attack demonstrated a high level of operational maturity, making use of Livi
 
 ---
 
-## 6. Why — Root Cause Analysis
+## 6. Why - Root Cause Analysis
 
 The root cause of this incident was a combination of technical and human factors:
 
@@ -119,7 +119,7 @@ The root cause of this incident was a combination of technical and human factors
 
 ---
 
-## 7. How — The Kill Chain
+## 7. How - The Kill Chain
 
 ```
 [1] INITIAL ACCESS
