@@ -38,7 +38,6 @@ This was **not a fresh intrusion**. The threat actor reused pre-staged access es
 | **Encryption Time** | 22:18:29 UTC, 27 January 2026 |
 | **Ransom Demand** | £65,000 (victim countered £11,000) |
 | **Data Exfiltrated** | Confirmed — exfil_data.zip |
-| **Severity** | 🔴 CRITICAL |
 
 ---
 
