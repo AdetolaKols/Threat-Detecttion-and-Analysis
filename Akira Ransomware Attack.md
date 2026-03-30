@@ -266,4 +266,3 @@ The attacker used `tasklist | findstr lsass` to locate the LSASS process, then a
 
 ---
 
-*This report was produced as part of a structured threat hunt training exercise using Microsoft Sentinel KQL across MDE telemetry tables.*
