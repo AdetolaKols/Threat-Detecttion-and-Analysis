@@ -1,12 +1,12 @@
 #  Akira Ransomware Attack - Ashford Sterling Recruitment
 
----
 
-> **Classification:** CONFIDENTIAL
-> **Incident Date:** 27 January 2026
-> **Report Date:** 30 March 2026
-> **Prepared by:** Adetola Kolawole
-> **Severity:** 🔴 CRITICAL
+- **Classification:** CONFIDENTIAL  
+- **Date of Incident:** 27 January 2026
+- **Report Date:** 30 March 2026 
+- **Analyst:** Adetola Kolawole  
+- **Severity:** 🔴 CRITICAL
+- **Environment:** Cyber Range Microsoft Sentinel - Log Analytics Workspace  
 
 ---
 
