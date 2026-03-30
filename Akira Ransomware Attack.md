@@ -1,12 +1,11 @@
-# 🔴 THREAT HUNT REPORT — Ashford Sterling Recruitment
-## Akira Ransomware Attack
+#  Akira Ransomware Attack - Ashford Sterling Recruitment
 
 ---
 
 > **Classification:** CONFIDENTIAL
 > **Incident Date:** 27 January 2026
 > **Report Date:** 30 March 2026
-> **Prepared by:** Threat Hunt Team
+> **Prepared by:** Adetola Kolawole
 > **Severity:** 🔴 CRITICAL
 
 ---
@@ -38,7 +37,7 @@ This was **not a fresh intrusion**. The threat actor reused pre-staged access es
 | **Compromised Hosts** | as-pc2, as-srv |
 | **Encryption Time** | 22:18:29 UTC, 27 January 2026 |
 | **Ransom Demand** | £65,000 (victim countered £11,000) |
-| **Data Exfiltrated** | ✅ Confirmed — exfil_data.zip |
+| **Data Exfiltrated** | Confirmed — exfil_data.zip |
 | **Severity** | 🔴 CRITICAL |
 
 ---
@@ -123,7 +122,7 @@ The attacker returned to the Ashford Sterling environment using pre-staged AnyDe
 | `21:42` | `\Device\NamedPipe\lsass` accessed — credentials harvested |
 | `22:10` | `net view \\10.1.0.154` and `\\10.1.0.183` — share enumeration on as-srv |
 | `22:17` | `updater.exe` staged to `C:\ProgramData\` on as-srv by PowerShell |
-| **`22:18:29`** | 🔴 **ENCRYPTION BEGINS** — `updater.exe` executes on as-srv |
+| **`22:18:29`** | **ENCRYPTION BEGINS** — `updater.exe` executes on as-srv |
 | `22:18:33` | `akira_readme.txt` dropped across Desktop, Documents, Downloads |
 | `22:20` | `wevtutil` clears Security, System, Application, Defender logs |
 | `22:20:27` | `clean.bat` executes — `updater.exe` deleted from disk |
@@ -227,7 +226,7 @@ The attacker used `tasklist | findstr lsass` to locate the LSASS process, then a
 
 ## 8. Recommendations
 
-### 🚨 Immediate Actions (0–24 Hours)
+###  Immediate Actions (0–24 Hours)
 
 - Isolate `as-pc2` and `as-srv` from the network immediately if not already done
 - Reset all credentials for `david.mitchell`, `as.srv.administrator`, and `svc_backup`
@@ -237,7 +236,7 @@ The attacker used `tasklist | findstr lsass` to locate the LSASS process, then a
 - Notify ICO within 72 hours of breach discovery — GDPR obligation given PII exposure
 - Do **NOT** pay the ransom without first consulting law enforcement and legal counsel
 
-### ⚠️ Short Term (1–2 Weeks)
+###  Short Term (1–2 Weeks)
 
 - Deploy MFA across all VPN, RDP, and remote access services without exception
 - Implement application whitelisting to block unapproved executables in `C:\ProgramData\` and `C:\Users\Public\`
@@ -247,7 +246,7 @@ The attacker used `tasklist | findstr lsass` to locate the LSASS process, then a
 - Conduct full environment sweep for `wsync.exe`, `senseir.exe`, and AnyDesk remnants
 - Implement network segmentation — workstations should not have direct SMB access to file servers
 
-### 📋 Long Term (1–3 Months)
+### Long Term (1–3 Months)
 
 - Implement EDR solution with real-time alerting for shadow copy deletion, LSASS access, and LOLBin abuse
 - Deploy honeypot shares to detect ransomware encryption activity early
