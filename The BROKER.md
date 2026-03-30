@@ -1,3 +1,5 @@
+<img width="1200" height="630" alt="image" src="https://github.com/user-attachments/assets/cc734965-bdfc-461c-8f2d-d760cc348887" />
+
 #  The Broker - Hands-on-Keyboard Attack
 **Classification:** CONFIDENTIAL  
 **Date of Incident:** 15 January 2026  
