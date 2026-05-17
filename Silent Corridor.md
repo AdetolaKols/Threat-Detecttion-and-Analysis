@@ -4,7 +4,7 @@
 ### Incident Reference: IR-2026-0220-01
 **Analyst:** Adetola Kolawole | Cybersecurity Analyst  
 **Platform:** Microsoft Sentinel | Workspace: LAW-SilentCorridor  
-**Hunt Date:** 2026-04-07  
+**Report Date:** 11th May 2026
 **Investigation Window:** 2026-02-20 00:00 UTC to 2026-03-06 23:59 UTC  
 **Severity:** CRITICAL  
 **Status:** Completed
