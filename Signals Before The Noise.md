@@ -4,7 +4,7 @@
 ### Incident Reference: IR-2025-1209-01
 **Analyst:** Adetola Kols | Cybersecurity Analyst  
 **Platform:** Microsoft Sentinel | Workspace: law-cyber-range  
-**Report Date:** 01 May 2026  
+**Report Written:** 01 May 2026  
 **Investigation Window:** 09 December 2025 00:00 UTC to 23 December 2025 23:59 UTC  
 **Severity:** HIGH  
 **Status:** Completed
